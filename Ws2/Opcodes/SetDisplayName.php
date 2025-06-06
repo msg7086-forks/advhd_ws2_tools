@@ -19,8 +19,8 @@ class SetDisplayName extends AbstractOpcode
         if ($this->version > 1.3) {
             $config = $this->reader->readData($dataSource, 1);
             $this->compiledSize += 1;
-            if ($config[0] > 0) {
-                throw new Exception('SetDisplayName config updated');
+            if ($config[0] != 0 && $config[0] != 255) {
+                throw new Exception('SetDisplayName config updated ' . $config[0]);
             }
         } else {
             $config = [0];
