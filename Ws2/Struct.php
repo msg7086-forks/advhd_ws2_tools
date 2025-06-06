@@ -22,6 +22,37 @@ class Struct
         $this->data = new \Helper\FastBuffer($this->data_array);
     }
 
+    private int $debugOffset = 0;
+    private function startDebug(): void
+    {
+        $this->debugOffset = $this->data->offset;
+    }
+    protected array $rows = [];
+    private function recordDebug(): void
+    {
+        $command = $this->data->buffer[$this->debugOffset];
+        $hex = $this->reader->getHex($command);
+        $size = $this->data->offset - $this->debugOffset;
+        try {
+            $class = $this->opcodesList->getByOpcode($hex);
+        } catch (Exception $e) {
+            $class = 'NOT_FOUND';
+            $size = 128;
+        }
+        $this->rows[] = '[' . $this->debugOffset . ': ' . $class . ']';
+        $debugData = array_slice($this->data->buffer, $this->debugOffset, $size);
+        $hex = '';
+        foreach ($debugData as $byte) {
+            $hex .= $this->reader->getHex($byte) . ' ';
+        }
+        $this->rows[] = $hex;
+    }
+    private function printDebug(): void
+    {
+        echo PHP_EOL, implode(PHP_EOL, array_slice($this->rows, -20)), PHP_EOL;
+    }
+
+
     public function generateScript(float $version, int $updateMode = 0, int $offset = 0): array
     {
         $this->totalSize = $this->data->count();
@@ -38,6 +69,7 @@ class Struct
             }
         }
         while($this->totalSize > 0) {
+            $this->startDebug();
             $command = $this->data->shift();
             $hex = $this->reader->getHex($command);
             try {
@@ -48,7 +80,10 @@ class Struct
                 $opcode->decompile($this->data);
                 $this->registerLabels($opcode);
                 $script[] = $opcode;
+                $this->recordDebug();
             } catch (Exception $e) {
+                $this->recordDebug();
+                $this->printDebug();
                 $this->processOpcodeException($command, $script, $e->getMessage());
             }
             $this->totalSize -= $opcode->getCompiledSize();

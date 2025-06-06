@@ -66,7 +66,8 @@ foreach ($files as $id => $file) {
     }
     $struct = new Ws2\Struct($reader, $opcodesList, $data, $textExtractor);
     $script = $struct->generateScript($version, $updateMode, $offset);
-    file_put_contents($file . '.src', implode("\n", $script));
+    $fileName = str_replace('.ws2', '', $file);
+    file_put_contents($fileName . '.src', implode("\n", $script));
     echo "Parsed time: " . round(microtime(true) - $time, 2) . "\n";
 }
 $textExtractor->dump();
