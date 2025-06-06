@@ -15,7 +15,7 @@ class DisplayMessage extends AbstractMessage
         [$layer, $length] = $this->reader->readString($dataSource);
         [$message, $messageLen] = $this->reader->readString($dataSource);
         $this->compiledSize = 1 + 4 + $length + $messageLen;
-        if ($this->version > 1.06) {
+        if ($this->version > 1.3) {
             [$type] = $this->reader->readData($dataSource, 1);
             $this->compiledSize += 1;
         } else {
@@ -52,7 +52,7 @@ class DisplayMessage extends AbstractMessage
             pack('V', (int)$messageId) .
             $this->reader->packString($layer) .
             $this->reader->packString($message);
-        if ($this->version > 1.06) {
+        if ($this->version > 1.3) {
             $code .= pack('c', (int)$type);
         }
         $this->content = $code;

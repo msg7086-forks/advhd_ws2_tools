@@ -16,7 +16,7 @@ class SetDisplayName extends AbstractOpcode
     {
         [$charName, $nameLen] = $this->reader->readString($dataSource);
         $this->compiledSize = 1 + $nameLen;
-        if ($this->version > 1.06) {
+        if ($this->version > 1.3) {
             $config = $this->reader->readData($dataSource, 1);
             $this->compiledSize += 1;
             if ($config[0] > 0) {
@@ -39,7 +39,7 @@ class SetDisplayName extends AbstractOpcode
         $code = $this->reader->convertHexToChar(static::OPCODE) .
             $this->reader->packString(trim($params[1], "'"));
 
-        if ($this->version > 1.06) {
+        if ($this->version > 1.3) {
             $code .= pack('c', (int)$params[0]);
         }
         $this->content = $code;
