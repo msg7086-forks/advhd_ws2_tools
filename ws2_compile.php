@@ -40,21 +40,9 @@ foreach ($files as $file) {
     unset($fileContent);
     echo "File {$file}\n";
 
-    $file = str_replace('.src', '.cmp', $file);
+    $file = str_replace('.src', '.ws2', $file);
     $compiler = new Ws2\Compiler($reader, $opcodesList, $lines);
     $compiler->run($file, $version, $updateMode);
-
-    $fileContent = file_get_contents($file);
-
-    $data = unpack('C*', $fileContent);
-    $size = count($data);
-    echo "File {$file} size:  . $size . \n";
-
-    for ($i = 1; $i <= $size; $i++) {
-        $data[$i] = ws2_encrypt($data[$i]);
-    }
-    $file = str_replace('.ws2.cmp', '.ws2u', $file);
-    file_put_contents($file, pack('c*', ...$data));
 }
 
 function ws2_encrypt($int) {

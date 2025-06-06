@@ -47,7 +47,7 @@ class Reader
     public function readFloat(\Helper\FastBuffer &$dataSource): float
     {
         $result = unpack('f', $dataSource->readFixedLengthString(4));
-        return $result[1];
+        return sprintf("%0.6f", $result[1]);
     }
 
     public function readDWord(\Helper\FastBuffer &$dataSource): int
