@@ -17,8 +17,8 @@ class VariableUnk2 extends AbstractOpcode
         [$action, $actionLen] = $this->reader->readString($dataSource);
         $this->compiledSize = 1 + $channelLen + $nameLen + 4 + 7 + $actionLen;
 
-        $this->content = static::FUNC . " ({$channel}, {$variableName}, {$action}, {$float}, ".
-            "".implode(', ', $config).")";
+        $this->content = static::FUNC . " ({$channel}, {$variableName}, {$float}, ".
+            "".implode(', ', $config).", {$action})";
         return $this;
     }
 
@@ -28,8 +28,8 @@ class VariableUnk2 extends AbstractOpcode
 
         $code = $this->reader->convertHexToChar(static::OPCODE) .
             $this->reader->packString($params[0]) .
-            $this->reader->packString($params[1]);
-        unset($params[0], $params[1]);
+            $this->reader->packString($params[10]);
+        unset($params[0], $params[10]);
         $action = array_shift($params);
         $float = (float)array_shift($params);
         $params = array_map('intval', $params);

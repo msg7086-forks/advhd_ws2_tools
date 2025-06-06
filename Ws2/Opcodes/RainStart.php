@@ -21,11 +21,11 @@ class RainStart extends AbstractOpcode
         $pic2config = $this->reader->readData($dataSource, 4);
         $this->compiledSize += 1 + $strLen + 7 + 10 * 4 + 5 * 4 + $pic1Len + 2 + $pic2Len + $pic3Len + 4;
 
-        $this->content = static::FUNC . " ({$string}, {$picture1}, {$picture2}, {$picture3}, ".
+        $this->content = static::FUNC . " ({$string}, ".
             "".implode(', ', $config).", ".
             "".implode(', ', $floats).", ".
-            "".implode(', ', $ints).", ".
-            "".implode(', ', $pic1config).", ".
+            "".implode(', ', $ints).", {$picture1}, ".
+            "".implode(', ', $pic1config).", {$picture2}, {$picture3}, ".
             "".implode(', ', $pic2config).")";
         return $this;
     }
@@ -35,10 +35,10 @@ class RainStart extends AbstractOpcode
         $params = $this->reader->unpackParams($params);
         $code = $this->reader->convertHexToChar(static::OPCODE) .
             $this->reader->packString($params[0]);
-        $picture1 = $params[1];
-        $picture2 = $params[2];
-        $picture3 = $params[3];
-        unset($params[0], $params[1], $params[2], $params[3]);
+        $picture1 = $params[23];
+        $picture2 = $params[26];
+        $picture3 = $params[27];
+        unset($params[0], $params[23], $params[26], $params[27]);
         $this->content = $code . $this->reader->packArray($params, 'c', 7, 'intval') .
             $this->reader->packArray($params, 'f', 10, 'floatval') .
             $this->reader->packArray($params, 'V', 5, 'intval') .

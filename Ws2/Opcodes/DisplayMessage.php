@@ -21,7 +21,7 @@ class DisplayMessage extends AbstractMessage
         } else {
             $type = 0;
         }
-        if ($type > 0) {
+        if ($type != 0 && $type != 0xFF) {
             throw new \Exception('SetMessageId id type changes: '. $messageId . ' / ' . $type);
         }
 
